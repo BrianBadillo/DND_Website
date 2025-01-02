@@ -54,7 +54,7 @@ public class App {
     /**
      * The client ID for this project allowing for Google OAuth2.0 authentication
      */
-    private static final String CLIENT_ID = "772038646799-d6fe7d3mkpm5unckcqdhk0eb5s2lkcr2.apps.googleusercontent.com";
+    private static final String CLIENT_ID = "493893382521-eq3qtondtm29gv02079oliis260mctg4.apps.googleusercontent.com";
     /** A JSON factory used to build a verifier for Google OAuth2.0 */
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
@@ -172,6 +172,39 @@ public class App {
         // A basic GET route to test that the backend is running
         app.get("/helloworld", ctx -> {
             ctx.result("Hello world!");
+        });
+        app.get("/users", ctx -> {
+            System.out.printf("%s\t%s\t%s%n", ctx.scheme(), ctx.method().name(), ctx.path());
+            ctx.status(200); // Status 200 OK
+            ctx.contentType("application/json"); // MIME type of JSON
+            /*
+            // Verify session
+            String sessionId = ctx.header("Session-ID");
+            StructuredResponse resp;
+            if (sessionId == null || sessionId.isEmpty()) {
+                resp = new StructuredResponse("error", "Session ID is required", null);
+                ctx.result(gson.toJson(resp));
+                return;
+            }
+            String validatedUserId = sessionService.getSession(sessionId);
+            if (validatedUserId == null) {
+                resp = new StructuredResponse("error", "Invalid session ID or unauthorized access", null);
+                ctx.result(gson.toJson(resp));
+                return;
+            }
+            */
+            // Query the database for users
+            List<User> users = db.usersTable.selectAllUsers();
+            if (users == null) {
+                resp = new StructuredResponse("error", "No users found", null);
+            } else {
+                JsonObject data = new JsonObject();
+                JsonElement usersJson = JsonParser.parseString(gson.toJson(users));
+                data.add("mUsers", usersJson);
+                resp = new StructuredResponse("ok", null, data);
+            }
+
+            ctx.result(gson.toJson(resp));
         });
         app.post("/auth/login", ctx -> {
             System.out.printf("%s\t%s\t%s%n", ctx.scheme(), ctx.method().name(), ctx.path());
