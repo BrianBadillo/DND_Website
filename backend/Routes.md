@@ -4,13 +4,10 @@ all users in Group
 ### Request format: 
 
     {
-        "mGroupId": int,
-        "mUserId": int
+
     }
 
 #### Fields: 
-* *mGroupId* - The ID of the group for which users are requested.
-* *mUserId* - The ID of the user requesting
 
 ### Response format: 
 
