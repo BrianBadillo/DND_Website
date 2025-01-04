@@ -17,23 +17,27 @@ rm -rf $TARGETFOLDER
 mkdir -p $TARGETFOLDER/$WEBFOLDERNAME
 
 # Step 2: Ensure npm dependencies are up-to-date (optional, uncomment if needed)
-# echo "Updating node dependencies"
-# npm update
+echo "Updating node dependencies"
+npm update
 
-# Step 3: Install npm dependencies (if not already installed)
+# Step 3: Remove any old build artifacts (important when switching branches)
+echo "Cleaning up old build artifacts"
+rm -rf ./build
+
+# Step 4: Install npm dependencies (if not already installed)
 if [ ! -d "node_modules" ]; then
   echo "Installing npm dependencies"
   npm install
 fi
 
-# Step 4: Build the React app
+# Step 5: Build the React app
 echo "Building React app"
 npm run build || { echo "Build failed! Exiting."; exit 1; }
 
-# Step 5: Copy static build files to the target folder
+# Step 6: Copy static build files to the target folder
 echo "Copying static build files"
 cp -r ./build/* $TARGETFOLDER/$WEBFOLDERNAME
 
-# Step 6: Launch the server (optional, uncomment if needed)
+# Step 7: Launch the server (optional, uncomment if needed)
 # echo "Starting local web server at $TARGETFOLDER/$WEBFOLDERNAME"
 # npm start $TARGETFOLDER/$WEBFOLDERNAME
